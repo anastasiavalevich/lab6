@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: isis-6
+spec:
+  selector:
+    matchLabels:
+      app: isis-6-label
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: isis-6-label
+    spec:
+    containers:
+      - name: isis6-web
+        image: anastasiavalevich/lab6
+        ports:
+          - containerPort: 8080
+        args:
+          - /bin/sh
+          - -c
+          - touch /tmp/healthy; sleep 20; rm -rf /tmp/healthy; sleep 600
+        readinessProbe:
+          exec:
+            command:
+              - cat
+              - /tmp/healthy
+          failureThreshold: 3
+          successThreshold: 1
+          periodSeconds: 3
